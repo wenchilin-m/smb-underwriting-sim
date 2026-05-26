@@ -1,0 +1,6 @@
+merchant_id,merchant_type,store_id,risk_tier,advance_rate,factor_rate,advance_amount,fixed_fee,total_payback,conv_prob,default_prob,exp_profit
+M001,sandwich,1,B,0.25,0.16,31862.0,5098.0,36960.0,0.6,0.04,2294.0
+M002,sushi,1,B,0.25,0.16,119006.0,19041.0,138046.0,0.6,0.04,8568.0
+M003,coffee,3,C,0.25,0.18,58796.0,10583.0,69379.0,0.7,0.04,5762.0
+M003,coffee,5,C,0.25,0.18,58122.0,10462.0,68584.0,0.7,0.04,5696.0
+M003,coffee,8,C,0.25,0.18,59944.0,10790.0,70734.0,0.7,0.04,5875.0
