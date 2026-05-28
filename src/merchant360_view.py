@@ -24,7 +24,7 @@ _HTML_TEMPLATE = r"""<!doctype html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=1440" />
-<title>Merchant 360 · Underwrite</title>
+<title>Merchant 360 · Credit Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -57,11 +57,14 @@ _HTML_TEMPLATE = r"""<!doctype html>
   .top-right{display:flex;align-items:center;gap:22px}
   .pill-status{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--green-ink);font-weight:600}
   .pill-status .blip{width:7px;height:7px;border-radius:50%;background:var(--green-bright);box-shadow:0 0 0 3px rgba(22,163,74,.18)}
+  .pill-attribution{font-size:12.5px;color:var(--ink-2);font-weight:500;text-decoration:none;border:1px solid var(--rule-2);padding:5px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;transition:border-color .15s,color .15s}
+  .pill-attribution:hover{border-color:var(--ink-3);color:var(--ink)}
+  .pill-attribution .arr{opacity:.55;font-size:11px}
   .btn-dark{background:var(--ink);color:#fff;padding:9px 16px;border-radius:6px;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:8px}
   .btn-dark:hover{background:#222}
   .btn-light{background:#fff;border:1px solid var(--rule-2);padding:8px 14px;border-radius:6px;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:8px}
   .btn-light:hover{border-color:#a8a8a4}
-  .hero{padding:36px 0 18px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:flex-end;border-bottom:1px solid var(--ink);position:relative}
+  .hero{padding:36px 0 18px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:flex-end;position:relative}
   .hero h1{font-family:"Source Serif 4",Georgia,serif;font-weight:500;font-size:84px;line-height:.95;letter-spacing:-.022em;margin:0}
   .hero .sub{margin-top:14px;max-width:560px;color:var(--ink-2);font-size:15.5px;line-height:1.45}
   .merchant-select{min-width:340px}
@@ -227,36 +230,53 @@ _HTML_TEMPLATE = r"""<!doctype html>
   .briefing .btn{background:#fff;color:var(--dark);border-radius:6px;padding:10px 14px;font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:space-between}
   .briefing::after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border:1px solid rgba(255,255,255,.08);border-radius:50%}
   .briefing::before{content:"";position:absolute;right:-80px;bottom:-80px;width:220px;height:220px;border:1px solid rgba(255,255,255,.05);border-radius:50%}
-  .footer{border-top:1px solid var(--ink);margin-top:48px;padding:24px 56px;display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3)}
+  .footer{border-top:1px solid var(--ink);margin-top:24px;padding:12px 56px;display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3)}
   .footer .colofon{font-family:"Source Serif 4",Georgia,serif;font-style:italic}
   .row{display:flex;align-items:center;gap:8px}
+  .navspan{color:var(--ink-2);font-size:13.5px;padding:6px 0;position:relative}
+  .navspan.on{color:var(--ink);font-weight:600}
+  .navspan.on::after{content:"";position:absolute;left:0;right:0;bottom:-19px;height:2px;background:var(--ink)}
+  .metrics{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px}
+  .metrics td{padding:9px 8px;border-top:1px solid var(--rule);vertical-align:top}
+  .metrics .m-lbl{font-weight:600;color:var(--ink);width:168px}
+  .metrics .m-val{font-family:"JetBrains Mono",monospace;width:150px;color:var(--ink)}
+  .metrics .m-note{color:var(--ink-3);font-size:12px}
+  .caveat{background:#fbf3e6;border:1px solid #e7d6b0;color:#7a5a12;border-radius:6px;padding:10px 12px;font-size:12.5px;margin-bottom:12px}
+  .note-block{color:var(--ink-2);font-size:13px;background:var(--soft);border-radius:6px;margin:4px 0 8px;padding:14px 16px}
+  .mcard{padding:18px 22px 22px;font-size:13.5px;color:var(--ink-2);line-height:1.55}
+  .mcard h4{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:16px;margin:20px 0 8px;color:var(--ink)}
+  .mcard h4:first-child{margin-top:0}
+  .mcard p{margin:0 0 8px}
+  .feat{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .feat .f{background:var(--soft);border:1px solid var(--rule);border-radius:4px;padding:3px 8px;font-size:11.5px;font-family:"JetBrains Mono",monospace;color:var(--ink-2)}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;margin-top:4px}
+  .kv .k{color:var(--ink-3)}
+  .formula{background:var(--soft);border:1px solid var(--rule);border-radius:6px;padding:12px 14px;font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.6;color:var(--ink);margin-top:6px;white-space:pre-wrap}
 </style>
 </head>
 <body>
 
 <header class="topbar">
   <div class="brand">
-    <div class="logo"><span class="dot"></span>UNDERWRITE</div>
+    <div class="logo"><span class="dot"></span>CREDIT LAB</div>
     <nav class="nav">
-      <a href="#">Portfolio</a>
-      <a href="#" class="on">Merchant 360</a>
-      <a href="#">Pipeline</a>
-      <a href="#">Policies</a>
-      <a href="#">Timelines</a>
+      <span class="navspan">Portfolio</span>
+      <span class="navspan on">Merchant 360</span>
+      <span class="navspan">Pipeline</span>
+      <span class="navspan">Policies</span>
+      <span class="navspan">Timelines</span>
     </nav>
   </div>
   <div class="top-right">
     <span class="pill-status"><span class="blip"></span><span id="healthy-count">Healthy</span></span>
-    <a href="#" style="font-size:13px;color:var(--ink-2)">Casebook</a>
-    <button class="btn-dark">Approve &amp; Disburse <span style="opacity:.6">&rarr;</span></button>
+    <a class="pill-attribution" href="https://www.linkedin.com/in/wenchilin/" target="_blank" rel="noopener noreferrer">Built by Wenchi Lin <span class="arr">&rarr;</span></a>
   </div>
 </header>
 
 <div id="root"></div>
 
 <footer class="footer">
-  <div class="colofon">Underwrite &middot; Single-merchant case view &middot; quantile-regression model</div>
-  <div>v4.2 &middot; Live model &middot; Policy 2026-02</div>
+  <div class="colofon">Credit Lab &middot; Single-merchant case view &middot; Kaggle restaurant datasets</div>
 </footer>
 
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
@@ -302,6 +322,7 @@ function Sparkline({values, w=80, h=24, stroke="currentColor", fill="none"}){
 }
 
 function ForecastChart({merchant}){
+  const [hoveredPoint, setHoveredPoint] = React.useState(null);
   const W = 800, H = 280, PAD = {l:48, r:24, t:18, b:34};
   const innerW = W - PAD.l - PAD.r, innerH = H - PAD.t - PAD.b;
   const actual = merchant.actual, fc = merchant.forecast;
@@ -324,6 +345,7 @@ function ForecastChart({merchant}){
   const bandPath = "M " + anchor + " L " + bandTopPts.join(" L ") + " L " + bandBotPts.join(" L ") + " L " + anchor + " Z";
   const nowX = x(lastActualIdx) + xStep*0.5;
   const fmt = v => "$"+Math.round(v/1000)+"k";
+  const fmtFull = v => "$"+Math.round(v).toLocaleString();
   return (
     <svg className="chart" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet">
       <defs><linearGradient id="bandgrad" x1="0" x2="0" y1="0" y2="1">
@@ -339,6 +361,7 @@ function ForecastChart({merchant}){
       <path className="median-future" d={fcPath} strokeDasharray="3 3"/>
       {actual.map((v,i)=>(<circle key={"a"+i} className="dot" cx={x(i)} cy={y(v)} r="3"/>))}
       {fc.map((v,i)=>(<circle key={"f"+i} className="dot-fc" cx={x(lastActualIdx+1+i)} cy={y(v)} r="3.5"/>))}
+      {allPoints.map((v,i)=>(<rect key={"hit"+i} x={x(i)-xStep/2} y={PAD.t} width={xStep} height={innerH} fill="transparent" style={{cursor:"pointer"}} onMouseEnter={()=>setHoveredPoint({idx:i, month:months[i], val:v, type:i>lastActualIdx?"forecast":"actual"})} onMouseLeave={()=>setHoveredPoint(null)}/>))}
       <line className="baseline" x1={PAD.l} x2={W-PAD.r} y1={H-PAD.b} y2={H-PAD.b}/>
       <line className="baseline" x1={PAD.l} x2={PAD.l} y1={PAD.t} y2={H-PAD.b}/>
       <g>
@@ -347,6 +370,18 @@ function ForecastChart({merchant}){
         <circle cx={x(totalPts-1)} cy={y(bandLo[bandLo.length-1])} r="2.5" fill="var(--green)" opacity=".6"/>
         <text className="anno" x={x(totalPts-1)-4} y={y(bandLo[bandLo.length-1])+14} textAnchor="end" fill="var(--green-ink)">P10 {fmt(bandLo[bandLo.length-1])}</text>
       </g>
+      {hoveredPoint && (()=>{
+        const cx = x(hoveredPoint.idx);
+        const bx = Math.min(Math.max(cx-50, PAD.l), W-PAD.r-100);
+        const ty = Math.max(y(hoveredPoint.val)-58, PAD.t+2);
+        return (
+        <g style={{pointerEvents:"none"}}>
+          <rect x={bx} y={ty} width="100" height="50" rx="4" fill="var(--ink)" opacity="0.95"/>
+          <text x={bx+50} y={ty+18} textAnchor="middle" fill="#fff" fontSize="12" fontWeight="600">{hoveredPoint.month}</text>
+          <text x={bx+50} y={ty+34} textAnchor="middle" fill="#fff" fontSize="13" fontWeight="700">{fmtFull(hoveredPoint.val)}</text>
+          <text x={bx+50} y={ty+47} textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="10">{hoveredPoint.type==="actual"?"Actual":"Forecast"}</text>
+        </g>);
+      })()}
     </svg>
   );
 }
@@ -372,10 +407,58 @@ function RepayTimeline({merchant}){
   );
 }
 
+function BacktestChart({series}){
+  const [hoveredPoint, setHoveredPoint] = React.useState(null);
+  const W=800, H=240, PAD={l:54, r:16, t:14, b:28};
+  const iW=W-PAD.l-PAD.r, iH=H-PAD.t-PAD.b, n=series.length;
+  const xStep = n>1 ? iW/(n-1) : iW;
+  const actual=series.map(s=>s.actual), p10=series.map(s=>s.p10), p50=series.map(s=>s.p50), p90=series.map(s=>s.p90);
+  const allv=[...actual,...p10,...p90];
+  const yMin=Math.min(...allv)*0.95, yMax=Math.max(...allv)*1.05;
+  const x=i=> n<=1 ? PAD.l+iW/2 : PAD.l + i*(iW/(n-1));
+  const y=v=> PAD.t + (1-(v-yMin)/(yMax-yMin))*iH;
+  const line=arr=> "M "+arr.map((v,i)=>x(i)+","+y(v)).join(" L ");
+  const band="M "+p90.map((v,i)=>x(i)+","+y(v)).join(" L ")+" L "+p10.map((v,i)=>x(i)+","+y(v)).reverse().join(" L ")+" Z";
+  const fmt=v=>"$"+Math.round(v/1000)+"k";
+  const yTicks=4, ticks=[];
+  for(let i=0;i<=yTicks;i++){ const v=yMin+(yMax-yMin)*(i/yTicks); ticks.push({v, y:PAD.t+(1-i/yTicks)*iH}); }
+  const T=6;
+  const labelIdx=[...new Set(Array.from({length:T+1},(_,k)=>Math.round(k*(n-1)/T)))];
+  return (
+    <svg className="chart" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" style={{height:240}}>
+      <g className="grid">{ticks.map((t,i)=>(<line key={i} x1={PAD.l} x2={W-PAD.r} y1={t.y} y2={t.y}/>))}</g>
+      <g className="axis">{ticks.map((t,i)=>(<text key={i} x={PAD.l-8} y={t.y+3} textAnchor="end">{fmt(t.v)}</text>))}</g>
+      <g className="axis">{labelIdx.map(i=>(<text key={i} x={x(i)} y={H-PAD.b+16} textAnchor="middle">{series[i].month}</text>))}</g>
+      <path d={band} fill="rgba(21,128,61,.10)"/>
+      <path d={line(p50)} className="median-future" strokeDasharray="3 3"/>
+      <path d={line(actual)} className="median"/>
+      {actual.map((v,i)=>(<circle key={i} className="dot" cx={x(i)} cy={y(v)} r={n>40?1.4:2.5}/>))}
+      <line className="baseline" x1={PAD.l} x2={W-PAD.r} y1={H-PAD.b} y2={H-PAD.b}/>
+      <line className="baseline" x1={PAD.l} x2={PAD.l} y1={PAD.t} y2={H-PAD.b}/>
+      {series.map((s,i)=>(<rect key={"bh"+i} x={x(i)-xStep/2} y={PAD.t} width={xStep} height={iH} fill="transparent" style={{cursor:"pointer"}} onMouseEnter={()=>setHoveredPoint({idx:i, ...s})} onMouseLeave={()=>setHoveredPoint(null)}/>))}
+      {hoveredPoint && (()=>{
+        const cx = x(hoveredPoint.idx);
+        const bx = Math.min(Math.max(cx-60, PAD.l), W-PAD.r-120);
+        const ty = Math.max(y(hoveredPoint.actual)-72, PAD.t+2);
+        const fmt = v => "$"+Math.round(v).toLocaleString();
+        return (
+        <g style={{pointerEvents:"none"}}>
+          <rect x={bx} y={ty} width="120" height="64" rx="4" fill="var(--ink)" opacity="0.95"/>
+          <text x={bx+60} y={ty+18} textAnchor="middle" fill="#fff" fontSize="12" fontWeight="600">{hoveredPoint.month}</text>
+          <text x={bx+60} y={ty+34} textAnchor="middle" fill="#fff" fontSize="11">Actual {fmt(hoveredPoint.actual)}</text>
+          <text x={bx+60} y={ty+48} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="11">P50 {fmt(hoveredPoint.p50)} &middot; P10 {fmt(hoveredPoint.p10)}</text>
+          <text x={bx+60} y={ty+60} textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="10">{hoveredPoint.method}</text>
+        </g>);
+      })()}
+    </svg>
+  );
+}
+
 window.Icon = Icon;
 window.Sparkline = Sparkline;
 window.ForecastChart = ForecastChart;
 window.RepayTimeline = RepayTimeline;
+window.BacktestChart = BacktestChart;
 </script>
 
 <script type="text/babel">
@@ -383,15 +466,13 @@ window.RepayTimeline = RepayTimeline;
 const { useState } = React;
 
 function App(){
-  const [merchantIdx, setMerchantIdx] = useState(0);
+  const [merchantIdx, setMerchantIdx] = useState(Math.max(0, window.MERCHANTS.findIndex(m=>m.kind==="sushi")));
   const [pickerOpen, setPickerOpen] = useState(false);
   const merchant = window.MERCHANTS[merchantIdx];
   const [openForecast, setOpenForecast] = useState(false);
-  const [aiTab, setAiTab] = useState("Today");
-  const [askVal, setAskVal] = useState("");
+  const [view, setView] = useState("forecast");
 
-  const cohortN = {sushi:"412", coffee:"1,284", sandwich:"906"}[merchant.kind] || "1,000";
-  const volTone = merchant.volatility<20?"green":merchant.volatility<30?"amber":"red";
+  const volTone = merchant.volatility<25?"green":merchant.volatility<40?"amber":"red";
 
   return (
     <div className="container">
@@ -401,7 +482,6 @@ function App(){
             <Icon.Store size={16}/> Merchant 360 &middot; Single-merchant underwriting view
           </div>
           <h1 className="serif">{merchant.name}</h1>
-          <div className="sub">Underwriting case file built from {merchant.tenure} of transaction history. P10 / P50 / P90 revenue paths plus the recommended advance the model would extend today.</div>
         </div>
         <div className="merchant-select" style={{position:"relative"}}>
           <div className="lbl">Case</div>
@@ -409,7 +489,7 @@ function App(){
             <span>
               <span className="mono" style={{color:"var(--ink-3)", marginRight:8}}>{merchant.id}</span>
               {merchant.name}
-              <span className="meta" style={{marginLeft:8}}>&middot; {merchant.kind} &middot; {merchant.tenure}</span>
+              <span className="meta" style={{marginLeft:8}}>&middot; {merchant.tenure}</span>
             </span>
             <Icon.Caret/>
           </div>
@@ -418,7 +498,7 @@ function App(){
               {window.MERCHANTS.map((m,i)=>(
                 <div className="merchant-row" key={m.id+"-"+m.store} onClick={()=>{setMerchantIdx(i);setPickerOpen(false);setOpenForecast(false);}}>
                   <span className="id">{m.id}</span>
-                  <span><span className="nm">{m.name}</span> <span style={{color:"var(--ink-3)",fontSize:12,marginLeft:6}}>&middot; {m.kind} &middot; {m.tenure}</span></span>
+                  <span><span className="nm">{m.name}</span> <span style={{color:"var(--ink-3)",fontSize:12,marginLeft:6}}>&middot; {m.tenure}</span></span>
                   <span className="verdict" style={{color: m.verdict==="approve"?"var(--green)":m.verdict==="review"?"var(--amber)":"var(--red)"}}>{m.verdict}</span>
                 </div>
               ))}
@@ -427,75 +507,69 @@ function App(){
         </div>
       </section>
 
-      <section className="bias">
-        <div style={{flex:1}}>
-          <div className="bias-headline">
-            <span className="num">{merchant.riskIndex}</span>
-            <span>Risk Index &middot; {merchant.riskLabel}</span>
-            <span className="tag">trailing 30 days</span>
-          </div>
-          <div className="bias-track" style={{marginTop:12}}>
-            {Array.from({length: 28}).map((_,i)=>{
-              const nowPos = Math.round(merchant.riskIndex/100*27);
-              const isNow = i===nowPos;
-              const heights = [22,18,14,10,16,14,18,22,20,12,16,18,14,10,18,14,22,18,12,16,14,18,30,20,16,14,12,18];
-              const cls = i<8 ? "dim" : i>nowPos-3 && i<nowPos ? "win" : "";
-              return <div key={i} className={"cell "+(isNow?"now":cls)} style={{height: heights[i]+"px"}}/>;
-            })}
-          </div>
-          <div className="bias-labels">
-            <span>Distress</span><span>Stress</span><span>Stable</span>
-            <span style={{color:"var(--green-ink)", fontWeight:600}}>Healthy</span>
-          </div>
-        </div>
-      </section>
-
       <div className="body">
         <div className="main-col">
           <DecisionCard merchant={merchant}/>
 
           <div className="step">
-            <div className="step-tag"><span className="n">1</span>Step One &middot; Pre-decision</div>
+            <div className="step-tag"><span className="n">1</span>Step One &middot; Model &amp; forecast</div>
             <div className="step-card">
               <div className="sc-head">
-                <h3><span className="ico"><Icon.Spark size={18}/></span>Revenue forecast</h3>
-                <div className="actions"><div className="seg"><button className="on">P10/50/90</button><button>Daily</button><button>Cohort</button></div></div>
+                <h3><span className="ico"><Icon.Spark size={18}/></span>Revenue model</h3>
+                <div className="actions"><div className="seg">
+                  <button className={view==="forecast"?"on":""} onClick={()=>setView("forecast")}>Forecast</button>
+                  <button className={view==="backtest"?"on":""} onClick={()=>setView("backtest")}>Backtest</button>
+                  <button className={view==="model"?"on":""} onClick={()=>setView("model")}>Model</button>
+                </div></div>
               </div>
-              <div className="chart-wrap"><ForecastChart merchant={merchant}/></div>
-              <div className="legend">
-                <span><span className="swatch band"></span>P10 &ndash; P90 band</span>
-                <span><span className="swatch actual"></span>Trailing actual</span>
-                <span><span className="swatch fc"></span>P50 forecast</span>
-                <span style={{marginLeft:"auto",color:"var(--ink-3)"}}>{merchant.qrAvailable?"Quantile regression":"Rolling fallback ±20%"} &middot; tier {merchant.riskTier}</span>
-              </div>
-              <div className={openForecast?"open":""}>
-                <div className="collapse-row" onClick={()=>setOpenForecast(o=>!o)} style={{cursor:"pointer"}}>
-                  <div className="lhs"><span className="chev" style={{display:"inline-block",transform: openForecast?"rotate(90deg)":"rotate(0deg)", transition:"transform .2s"}}><Icon.Chev/></span><b style={{color:"var(--ink)"}}>Forecast details</b><span className="smallcaps" style={{background:"var(--soft)",padding:"2px 8px",borderRadius:4}}>{openForecast?"expanded":"collapsed"}</span></div>
-                  <div style={{color:"var(--ink-3)",fontSize:12}}>next-month P50 {"$"+Math.round(merchant.forecast[0]).toLocaleString()}</div>
-                </div>
-                {openForecast && (
-                  <div style={{padding:"4px 22px 22px", display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:18, borderTop:"1px solid var(--rule)", paddingTop:18}}>
-                    {[
-                      {l:"P10 floor", v:"$"+Math.round(merchant.bandLo[0]).toLocaleString(), n:"downside scenario"},
-                      {l:"P50 median", v:"$"+Math.round(merchant.forecast[0]).toLocaleString(), n:"expected next month"},
-                      {l:"P90 ceiling", v:"$"+Math.round(merchant.bandHi[0]).toLocaleString(), n:"upside scenario"},
-                      {l:"Model", v:merchant.qrAvailable?"QR":"Fallback", n:"tier "+merchant.riskTier},
-                    ].map((d,i)=>(
-                      <div key={i}><div className="smallcaps">{d.l}</div><div className="serif" style={{fontSize:22,fontWeight:600,marginTop:2}}>{d.v}</div><div style={{fontSize:11.5,color:"var(--ink-3)"}}>{d.n}</div></div>
-                    ))}
+
+              {view==="forecast" && (
+                <div>
+                  <div className="chart-wrap"><ForecastChart merchant={merchant}/></div>
+                  <div className="legend">
+                    <span><span className="swatch band"></span>P10 &ndash; P90 band</span>
+                    <span><span className="swatch actual"></span>Trailing actual</span>
+                    <span><span className="swatch fc"></span>P50 forecast</span>
+                    <span style={{marginLeft:"auto",color:"var(--ink-3)"}}>{merchant.qrAvailable?"Quantile regression":"Rolling fallback ±20%"} &middot; tier {merchant.riskTier}</span>
                   </div>
-                )}
-              </div>
+                  <div className={openForecast?"open":""}>
+                    <div className="collapse-row" onClick={()=>setOpenForecast(o=>!o)} style={{cursor:"pointer"}}>
+                      <div className="lhs"><span className="chev" style={{display:"inline-block",transform: openForecast?"rotate(90deg)":"rotate(0deg)", transition:"transform .2s"}}><Icon.Chev/></span><b style={{color:"var(--ink)"}}>Forecast details</b><span className="smallcaps" style={{background:"var(--soft)",padding:"2px 8px",borderRadius:4}}>{openForecast?"hide":"show"}</span></div>
+                      <div style={{color:"var(--ink-3)",fontSize:12}}>next-month P10 {"$"+Math.round(merchant.bandLo[0]).toLocaleString()}</div>
+                    </div>
+                    {openForecast && (
+                      <div style={{padding:"4px 22px 22px", display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:18, borderTop:"1px solid var(--rule)", paddingTop:18}}>
+                        {[
+                          {l:"P10 floor", v:"$"+Math.round(merchant.bandLo[0]).toLocaleString(), n:"downside scenario"},
+                          {l:"P50 median", v:"$"+Math.round(merchant.forecast[0]).toLocaleString(), n:"expected next month"},
+                          {l:"P90 ceiling", v:"$"+Math.round(merchant.bandHi[0]).toLocaleString(), n:"upside scenario"},
+                          {l:"Model", v:merchant.qrAvailable?"QR":"Fallback", n:"tier "+merchant.riskTier},
+                        ].map((d,i)=>(
+                          <div key={i}><div className="smallcaps">{d.l}</div><div className="serif" style={{fontSize:22,fontWeight:600,marginTop:2}}>{d.v}</div><div style={{fontSize:11.5,color:"var(--ink-3)"}}>{d.n}</div></div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {view==="backtest" && <div className="chart-wrap" style={{paddingBottom:18}}><BacktestPanel bt={merchant.backtest}/></div>}
+              {view==="model" && <ModelPanel m={merchant}/>}
+              {view!=="model" && (
+                <div style={{padding:"0 22px 14px", fontSize:11.5, color:"var(--ink-3)", fontStyle:"italic"}}>
+                  Timeline shifted to May 2026 for demo consistency; metrics are calculated from the original series.
+                </div>
+              )}
             </div>
           </div>
 
           <div className="step">
             <div className="step-tag"><span className="n">2</span>Step Two &middot; Risk signals</div>
             <div className="step-card">
-              <div className="sc-head"><h3>Cohort-relative behaviour</h3><div className="actions"><span>Compared against {merchant.kind} cohort &middot; n={cohortN}</span></div></div>
+              <div className="sc-head"><h3>Risk signals</h3><div className="actions"><span>Measured against fixed underwriting policy thresholds</span></div></div>
               <div className="signals">
-                <Signal lbl="Revenue volatility" val={merchant.volatility} unit="%" tone={volTone}
-                  note={`Coefficient of variation drives risk tiering. ${merchant.volatility<20?"Well within policy.":merchant.volatility<30?"Within tolerance, watch closely.":"Above the 25% policy threshold."}`}
+                <Signal lbl="Revenue volatility" val={merchant.volatility} unit="%" tone={volTone} meta="vs tier"
+                  note={`Coefficient of variation drives risk tiering. ${merchant.volatility<25?"Within tier A (CV < 0.25).":merchant.volatility<40?"Within tier B band (0.25 to 0.40).":"Above the tier B ceiling (>= 0.40)."}`}
                   spark={[merchant.volatility+3, merchant.volatility+1, merchant.volatility+2, merchant.volatility, merchant.volatility-1, merchant.volatility]} />
                 <Signal lbl="History on file" val={merchant.months.length>0?merchant.tenure.split(" ")[0]:"0"} unit={merchant.tenure.split(" ")[1]||""} tone={merchant.qrAvailable?"green":"amber"}
                   note={merchant.qrAvailable?"Enough history to fit the quantile regression model directly.":"Below the 12-month threshold for QR; rolling fallback used."}
@@ -510,18 +584,19 @@ function App(){
           <div className="step">
             <div className="step-tag"><span className="n">3</span>Step Three &middot; Offer construction</div>
             <div className="step-card">
-              <div className="sc-head"><h3>Recommended advance</h3><div className="actions"><button className="btn-light"><Icon.Dots/></button><button className="btn-light">Adjust manually</button></div></div>
+              <div className="sc-head"><h3>Recommended advance</h3><div className="actions"><span>Tier {merchant.riskTier} terms &middot; P10-anchored sizing</span></div></div>
               <div className="offer">
                 <div className="offer-left">
                   <div className="smallcaps">Advance amount</div>
                   <div className="offer-amount"><span className="sym">$</span>{merchant.advance.toLocaleString()}</div>
                   <div className="offer-terms">
                     <div className="term"><div className="lbl">Fixed fee</div><div className="val">${merchant.fee.toLocaleString()}</div></div>
+                    <div className="term"><div className="lbl">Total payback</div><div className="val">${merchant.totalPayback.toLocaleString()}</div></div>
                     <div className="term"><div className="lbl">Term</div><div className="val">{merchant.term}<span className="unit">months</span></div></div>
                     <div className="term"><div className="lbl">Repay rate</div><div className="val">{Math.round(merchant.repayRate*100)}<span className="unit">% of daily revenue</span></div></div>
+                    <div className="term"><div className="lbl">Monthly target</div><div className="val">${merchant.monthlyTarget.toLocaleString()}<span className="unit">/mo at P10</span></div></div>
                     <div className="term"><div className="lbl">APR (effective)</div><div className="val">{merchant.effApr}<span className="unit">%</span></div></div>
                   </div>
-                  <div className="offer-cta"><button className="btn-pri">Send offer <Icon.Chev/></button><button className="btn-sec">Save for committee</button></div>
                 </div>
                 <div className="offer-right">
                   <h4>Why this number</h4>
@@ -532,62 +607,43 @@ function App(){
               </div>
             </div>
           </div>
-
-          <div className="step">
-            <div className="step-tag"><span className="n">4</span>Step Four &middot; Post-decision monitor</div>
-            <div className="step-card">
-              <div className="sc-head"><h3>Repayment trajectory</h3><div className="actions"><span>{merchant.term}-month plan &middot; if funded</span></div></div>
-              <RepayTimeline merchant={merchant}/>
-              <div className="legend" style={{paddingTop:14}}>
-                <span><span className="swatch fc"></span>Realised</span>
-                <span><span className="swatch" style={{background:"repeating-linear-gradient(45deg,#e0e0db,#e0e0db 3px,#f4f4f1 3px,#f4f4f1 6px)"}}></span>Projected (illustrative)</span>
-                <span style={{marginLeft:"auto",color:"var(--ink-3)"}}>Post-issuance view &middot; activates after disbursement</span>
-              </div>
-            </div>
-          </div>
         </div>
 
         <aside className="side-col">
           <div className="side-card">
-            <div className="sh"><h4>Risk Index</h4><span style={{color:"var(--ink-3)"}}><Icon.Clock/></span></div>
+            <div className="sh"><h4>Risk tier</h4><span className="mono" style={{color:"var(--ink-3)",fontSize:12}}>A / B / C</span></div>
             <div className="sb">
-              <div className="idx-strip">
-                {Array.from({length:22}).map((_,i)=>{
-                  const heights = [10,12,8,14,10,16,12,10,14,12,8,16,12,18,14,12,18,14,16,18,24,20];
-                  const isNow = i===Math.round(merchant.riskIndex/100*21);
-                  return <div key={i} className={"c "+(isNow?"now":"")} style={{height: heights[i]+"px"}}/>;
-                })}
-              </div>
-              <div className="idx-labels"><span>Risky</span><span>Stress</span><span>Stable</span><span style={{color:"var(--green-ink)",fontWeight:600}}>{merchant.riskIndex} {merchant.riskLabel}</span></div>
-            </div>
-          </div>
-
-          <div className="ai-card">
-            <div className="ai-trig"><span className="plus"><Icon.Plus/></span>AI Underwriter</div>
-            <div className="ai-body">
-              <h5>Case summary</h5>
-              <div className="ai-tabs">{["Today","This week","Trailing 90d"].map(x=>(<button key={x} className={"ai-tab "+(aiTab===x?"on":"")} onClick={()=>setAiTab(x)}>{x}</button>))}</div>
-              <div>{merchant.ai.map((line,i)=>(<div className="ai-bullet" key={i}><span>{line}</span></div>))}</div>
-              <div className="ai-more"><span>Derived from model output</span><a href="#" style={{color:"var(--ink)",fontWeight:600,display:"flex",alignItems:"center",gap:6}}>Show full <Icon.Chev/></a></div>
-              <div className="chips"><span className="chip">Volatility deep-dive</span><span className="chip">Compare cohort</span><span className="chip">Counterfactual offer</span></div>
-              <div className="ask"><input value={askVal} onChange={e=>setAskVal(e.target.value)} placeholder="Ask about this merchant..."/><button className="send"><Icon.Send/></button></div>
+              {(()=>{ const T={A:{f:10,a:20,r:10},B:{f:14,a:15,r:12},C:{f:18,a:10,r:15}}[merchant.riskTier];
+                return (<div>
+                  <div style={{display:"flex",alignItems:"baseline",gap:10}}>
+                    <span className="serif" style={{fontSize:34,fontWeight:600,color: merchant.riskTier==="A"?"var(--green)":merchant.riskTier==="B"?"var(--amber)":"var(--red)"}}>{merchant.riskTier}</span>
+                    <span style={{color:"var(--ink-3)",fontSize:12.5}}>sets this merchant&rsquo;s pricing</span>
+                  </div>
+                  <div className="kv" style={{marginTop:10,fontSize:12.5}}>
+                    <span className="k">Advance rate</span><span className="mono">{T.a}% of P10 &times; term</span>
+                    <span className="k">Factor rate</span><span className="mono">{T.f}%</span>
+                    <span className="k">Repayment</span><span className="mono">{T.r}% of daily revenue</span>
+                  </div>
+                </div>); })()}
             </div>
           </div>
 
           <div className="side-card">
-            <div className="sh"><h4>Recent flags</h4></div>
-            <div className="sb" style={{padding:"4px 16px 12px"}}>
-              {merchant.flags.map((f,i)=>(<div key={i} className="trend-row"><div className="lhs"><span className={"dot "+(f.sev==="g"?"g":f.sev==="r"?"r":"a")}></span><span>{f.text}</span></div><div className="rhs">{i===0?"2h":i===1?"yest":"3d"}</div></div>))}
-              <div className="trend-row"><div className="lhs"><span className="dot g"></span><span>Bank balance refreshed</span></div><div className="rhs">7d</div></div>
+            <div className="sh"><h4>Model notes</h4></div>
+            <div className="sb" style={{fontSize:13,color:"var(--ink-2)",lineHeight:1.5}}>
+              <div><b style={{color:"var(--ink)"}}>{merchant.model.path}</b></div>
+              {merchant.backtest.n_holdout>0
+                ? <div style={{marginTop:6}}>Backtested on {merchant.backtest.n_holdout} months &middot; P10&ndash;P90 coverage {Math.round(merchant.backtest.coverage*100)}%{merchant.backtest.reliable?"":" (thin)"}</div>
+                : <div style={{marginTop:6}}>{merchant.backtest.note}</div>}
+              <div style={{marginTop:6,color:"var(--ink-3)",fontSize:12}}>See the Backtest and Model tabs for detail.</div>
             </div>
           </div>
 
-          <div className="briefing">
-            <div className="smallcaps" style={{color:"#7a8a82", marginBottom:14, letterSpacing:".18em"}}>Portfolio Briefing</div>
-            <h3>Renewals open in 14 days</h3>
-            <p>Several merchants in your book qualify for early-renewal offers under the May 2026 policy. Send batched offers from the pipeline view.</p>
-            <div className="nums"><div><span className="n">{window.MERCHANTS.length}</span><span className="u">in book</span></div><div><span className="n">14</span><span className="u">days</span></div></div>
-            <button className="btn">Open pipeline <span>&rsaquo;</span></button>
+          <div className="side-card">
+            <div className="sh"><h4>Signals</h4></div>
+            <div className="sb" style={{padding:"4px 16px 12px"}}>
+              {merchant.flags.map((f,i)=>(<div key={i} className="trend-row"><div className="lhs"><span className={"dot "+(f.sev==="g"?"g":f.sev==="r"?"r":"a")}></span><span>{f.text}</span></div></div>))}
+            </div>
           </div>
         </aside>
       </div>
@@ -601,25 +657,34 @@ function DecisionCard({merchant}){
     review:  {bg:"var(--amber)", txt:"Review",  em:"manual sign-off"},
     decline: {bg:"var(--red)",   txt:"Decline", em:"policy breach"},
   }[merchant.verdict];
-  const volStrip = merchant.volatility<20?"green":merchant.volatility<30?"amber":"red";
+  const volStrip = merchant.volatility<25?"green":merchant.volatility<40?"amber":"red";
+  const [openWhy, setOpenWhy] = React.useState(false);
   return (
     <div className="ncard" style={{marginTop:0}}>
-      <div className="head" style={{paddingTop:18, paddingBottom:14}}>
-        <span className="cat">Hero summary <span style={{marginLeft:8,fontSize:11,color:"var(--ink-3)"}}>&middot; always visible</span></span>
-        <span className="bookmark"><Icon.Bookmark/></span>
-      </div>
-      <div style={{padding:"0 18px 18px"}}>
+      <div style={{padding:"18px 18px 18px"}}>
         <div className="decision-head">
           <span className="badge-approve" style={{background:v.bg}}><span className="tick" style={{color:v.bg}}><Icon.Tick/></span> {v.txt}</span>
-          <div className="decision-headline">Recommended offer ready &middot; <em>{v.em}</em></div>
-          <div className="decision-meta">Decision <b>{merchant.id}-2026-05</b> &middot; model v4.2</div>
+          <div className="decision-meta">Decision <b>{merchant.id}-2026-05</b></div>
+        </div>
+        <div style={{marginTop:12}}>
+          <div onClick={()=>setOpenWhy(o=>!o)} style={{cursor:"pointer", display:"flex", alignItems:"center", gap:8, fontSize:12.5, color:"var(--ink-2)"}}>
+            <span style={{display:"inline-block", transform: openWhy?"rotate(90deg)":"rotate(0deg)", transition:"transform .2s"}}><Icon.Chev/></span>
+            <b style={{color:"var(--ink)"}}>Decision Rationale</b>
+            <span className="smallcaps" style={{background:"var(--soft)", padding:"2px 8px", borderRadius:4}}>{openWhy?"hide":"show"}</span>
+          </div>
+          {openWhy && (
+            <div style={{marginTop:10, fontSize:13, color:"var(--ink-2)", lineHeight:1.55, borderTop:"1px solid var(--rule)", paddingTop:10}}>
+              <div style={{marginBottom:6}}><b style={{color:"var(--ink)"}}>Demo policy.</b> Manual review is triggered by Tier C risk or elevated revenue variability; otherwise, the case is eligible for auto-approval.</div>
+              <div>{merchant.verdictExplain}</div>
+            </div>
+          )}
         </div>
       </div>
       <div className="stats">
-        <Stat lbl="Avg monthly revenue" val={"$"+merchant.avgRev.toLocaleString()} delta={merchant.revDelta} up={merchant.revUp} sub="vs first month on file" strip="green" spark={merchant.actual.slice(-6)}/>
-        <Stat lbl="Revenue volatility" val={merchant.volatility+"%"} sub="coefficient of variation" strip={volStrip} spark={merchant.actual.slice(-6)}/>
-        <Stat lbl="Recommended advance" val={"$"+merchant.advance.toLocaleString()} delta={merchant.advPctP50+"% of P50"} up sub={"tier "+merchant.riskTier} strip="dark"/>
-        <Stat lbl="Fixed fee &middot; term" val={"$"+merchant.fee.toLocaleString()} sub={`${merchant.term}-month plan &middot; ${Math.round(merchant.repayRate*100)}% repay`} strip="dark"/>
+        <Stat lbl="Avg monthly revenue" val={"$"+merchant.avgRev.toLocaleString()} delta={merchant.revDelta} up={merchant.revUp} sub={merchant.revDeltaLabel} strip="green"/>
+        <Stat lbl="Revenue volatility" val={merchant.volatility+"%"} sub="coefficient of variation" strip={volStrip}/>
+        <Stat lbl="Recommended advance" val={"$"+merchant.advance.toLocaleString()} delta={merchant.advPctP10+"% of P10"} up sub={"tier "+merchant.riskTier} strip="dark"/>
+        <Stat lbl="Fixed fee · term" val={"$"+merchant.fee.toLocaleString()} sub={`${merchant.term}-month plan &middot; ${Math.round(merchant.repayRate*100)}% repay`} strip="dark"/>
       </div>
     </div>
   );
@@ -637,14 +702,73 @@ function Stat({lbl, val, sub, delta, up, strip, spark}){
   );
 }
 
-function Signal({lbl, val, unit, tone, note, spark}){
+function Signal({lbl, val, unit, tone, note, spark, meta}){
   return (
     <div className="signal">
-      <div className="lbl"><span>{lbl}</span><span style={{color:"var(--ink-3)",fontSize:10.5}}>vs cohort</span></div>
+      <div className="lbl"><span>{lbl}</span>{meta && <span style={{color:"var(--ink-3)",fontSize:10.5}}>{meta}</span>}</div>
       <div className="val">{val}<span className="unit">{unit}</span></div>
       <div className="note">{note}</div>
       {spark && <div style={{marginTop:"auto"}}><Sparkline values={spark} w={220} h={32} stroke={tone==="green"?"var(--green)":tone==="red"?"var(--red)":"var(--amber)"}/></div>}
       <div className={"stripbar "+tone}></div>
+    </div>
+  );
+}
+
+function BacktestPanel({bt}){
+  if(!bt || !bt.n_holdout){
+    return <div className="note-block">{bt && bt.note ? bt.note : "No backtest available for this merchant."}</div>;
+  }
+  const money = v => "$"+Math.round(v).toLocaleString();
+  const pct0  = v => Math.round(v*100)+"%";
+  const pct1  = v => (v*100).toFixed(1)+"%";
+  const skill = v => v==null ? "—" : (v>=0?"+":"")+Math.round(v*100)+"%";
+  const rows = [
+    ["P50 MAE", money(bt.mae_p50), "mean absolute error of the median forecast"],
+    ["P50 MAPE", pct1(bt.mape_p50), "mean absolute percentage error"],
+    ["P10–P90 coverage", pct0(bt.coverage)+" (target 80%)", "share of actuals inside the band"],
+    ["Pinball loss", Math.round(bt.pinball).toLocaleString(), "avg quantile loss — lower is better"],
+    ["Skill vs naive", skill(bt.skill_vs_naive), "MAE improvement over last-value baseline"],
+    ["Skill vs seasonal", skill(bt.skill_vs_seasonal), "MAE improvement over seasonal-naive"],
+    ["Holdout months", String(bt.n_holdout), "out-of-sample points scored"],
+  ];
+  return (
+    <div>
+      {!bt.reliable && <div className="caveat">Thin history (n={bt.n_holdout}) — treat these numbers as indicative, not reliable.</div>}
+      <BacktestChart series={bt.series}/>
+      <div className="legend">
+        <span><span className="swatch actual"></span>Actual</span>
+        <span><span className="swatch fc"></span>P50 forecast</span>
+        <span><span className="swatch band"></span>P10–P90 band</span>
+        <span style={{marginLeft:"auto",color:"var(--ink-3)"}}>walk-forward &middot; no look-ahead</span>
+      </div>
+      <table className="metrics"><tbody>
+        {rows.map((r,i)=>(<tr key={i}><td className="m-lbl">{r[0]}</td><td className="m-val">{r[1]}</td><td className="m-note">{r[2]}</td></tr>))}
+      </tbody></table>
+      {bt.note && <div style={{fontSize:12,color:"var(--ink-3)",padding:"10px 0 2px"}}>{bt.note}</div>}
+    </div>
+  );
+}
+
+function ModelPanel({m}){
+  const mod = m.model;
+  return (
+    <div className="mcard">
+      <h4>Forecast model</h4>
+      <div className="kv">
+        <span className="k">Estimator</span><span>{mod.estimator}</span>
+        <span className="k">Quantiles</span><span>{mod.quantiles.map(q=>"P"+q).join(" / ")}</span>
+        <span className="k">Target</span><span>{mod.target}</span>
+        <span className="k">Fallback</span><span>{mod.fallback}</span>
+        <span className="k">Path used</span><span><b style={{color:"var(--ink)"}}>{mod.path}</b> &middot; {mod.trainingRows} months on file</span>
+        <span className="k">Data source</span><span>{mod.source && mod.source.url ? <a href={mod.source.url} target="_blank" rel="noopener noreferrer" style={{color:"var(--green-ink)",borderBottom:"1px solid var(--rule-2)"}}>{mod.source.name}</a> : (mod.source ? mod.source.name : "—")}</span>
+      </div>
+      <h4>Features</h4>
+      <div className="feat">{mod.features.map((f,i)=>(<span className="f" key={i}>{f}</span>))}</div>
+      <h4>Why quantile regression, not OLS</h4>
+      <p>Ordinary least squares minimises squared error and returns one expected value — the classic gradient-descent fit. Lending cares about the downside, not the average. So we instead minimise pinball loss at P10 / P50 / P90 to forecast the whole distribution, and the P10 floor is what sizes the advance. (The estimator is solved by linear programming, not gradient descent.)</p>
+      <h4>Risk tier &amp; pricing</h4>
+      <p>The tier is the real decision variable — it sets the advance, factor, and repayment rates. It is assigned from history length, volatility (CV), and whether the quantile model fit:</p>
+      <div className="formula">A: quantile model fits, &ge; 24 months, CV &lt; 0.25{"\n"}B: quantile model fits, OR (&ge; 12 months and CV &lt; 0.40){"\n"}C: otherwise (thin history or high volatility){"\n"}{"\n"}tier params  (advance rate / factor rate / repayment rate):{"\n"}  A    20% / 10% / 10%{"\n"}  B    15% / 14% / 12%{"\n"}  C    10% / 18% / 15%{"\n"}{"\n"}this merchant: tier {m.riskTier}  &middot;  CV {m.cv}  &middot;  {mod.trainingRows} months  &middot;  {mod.qrAvailable ? "QR fitted" : "fallback"}</div>
     </div>
   );
 }

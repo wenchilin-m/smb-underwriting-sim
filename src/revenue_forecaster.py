@@ -165,3 +165,135 @@ class RevenueForecaster:
             .iloc[-last_n:]
             .tolist()
         )
+
+    @staticmethod
+    def _fallback_value(rev_hist, moy_hist, target_month, seasonal_only: bool = False):
+        """Serving-style fallback using only past data.
+
+        Returns the same-calendar-month prior value if available (seasonal naive),
+        otherwise the rolling 3-month mean. With seasonal_only=True returns the
+        seasonal value or None (used to score a pure seasonal-naive baseline).
+        """
+        if len(rev_hist) == 0:
+            return None
+        same = rev_hist[moy_hist == target_month]
+        if len(same) >= 1:
+            return float(same[-1])
+        if seasonal_only:
+            return None
+        return float(np.mean(rev_hist[-3:]))
+
+    def backtest(self, merchant_id: str, store_id: str, min_history: int = 4) -> dict:
+        """Rolling-origin (walk-forward) out-of-sample evaluation for one merchant-store.
+
+        For each origin t in [min_history, N): train only on months [0:t] and predict
+        month t. Uses the quantile-regression model where it can fit, otherwise the same
+        serving fallback (seasonal-naive / rolling-3mo) production would use. Scores P50
+        point accuracy, P10-P90 band coverage, pinball loss, and skill vs naive and
+        seasonal-naive baselines. No look-ahead: each prediction sees only its past.
+        """
+        mask = (
+            (self.monthly_rev.merchant_id == merchant_id)
+            & (self.monthly_rev.store_id == store_id)
+        )
+        data = self.monthly_rev[mask].sort_values('year_month').reset_index(drop=True)
+        n = len(data)
+        rev = data['monthly_revenue'].to_numpy(dtype=float)
+        moy = data['year_month'].dt.month.to_numpy()
+        labels = data['year_month'].astype(str).tolist()
+
+        if n <= min_history:
+            return {
+                'n_holdout': 0,
+                'series': [],
+                'note': (f'Only {n} months on file; need more than {min_history} '
+                         'for a walk-forward backtest.'),
+            }
+
+        series, naive_preds, seas_preds = [], [], []
+        qr_pts = fb_pts = 0
+        for t in range(min_history, n):
+            upto = data.iloc[0:t + 1]              # train on [0:t], predict month t
+            qr = _quantile_forecast(upto)
+            if qr is not None:
+                p10, p50, p90 = max(qr['p10'], 0.0), max(qr['p50'], 0.0), max(qr['p90'], 0.0)
+                method = 'QR'
+                qr_pts += 1
+            else:
+                base = self._fallback_value(rev[:t], moy[:t], moy[t])
+                if base is None:
+                    continue
+                p10, p50, p90 = base * 0.80, base, base * 1.20
+                method = 'fallback'
+                fb_pts += 1
+
+            p10, p50, p90 = sorted([p10, p50, p90])
+            naive = rev[t - 1]
+            seas = self._fallback_value(rev[:t], moy[:t], moy[t], seasonal_only=True)
+            naive_preds.append(naive)
+            seas_preds.append(seas if seas is not None else naive)
+            series.append({
+                'month': labels[t],
+                'actual': round(float(rev[t])),
+                'p10': round(float(p10)),
+                'p50': round(float(p50)),
+                'p90': round(float(p90)),
+                'method': method,
+            })
+
+        if not series:
+            return {
+                'n_holdout': 0,
+                'series': [],
+                'note': 'No scorable out-of-sample months after feature construction.',
+            }
+
+        actual = np.array([s['actual'] for s in series], dtype=float)
+        p10 = np.array([s['p10'] for s in series], dtype=float)
+        p50 = np.array([s['p50'] for s in series], dtype=float)
+        p90 = np.array([s['p90'] for s in series], dtype=float)
+        naive = np.array(naive_preds, dtype=float)
+        seas = np.array(seas_preds, dtype=float)
+
+        def _mae(a, b):
+            return float(np.mean(np.abs(a - b)))
+
+        def _pinball(y, pred, q):
+            d = y - pred
+            return float(np.mean(np.maximum(q * d, (q - 1) * d)))
+
+        mae_p50 = _mae(actual, p50)
+        mape_p50 = float(np.mean(np.abs(actual - p50) / actual))
+        coverage = float(np.mean((actual >= p10) & (actual <= p90)))
+        pinball = float(np.mean([
+            _pinball(actual, p10, 0.10),
+            _pinball(actual, p50, 0.50),
+            _pinball(actual, p90, 0.90),
+        ]))
+        mae_naive = _mae(actual, naive)
+        mae_seas = _mae(actual, seas)
+
+        if qr_pts == 0:
+            note = ('Fallback-only: history too short to fit the quantile model; '
+                    'metrics reflect the rolling/seasonal baseline.')
+        elif fb_pts > 0:
+            note = (f'{qr_pts} quantile-model + {fb_pts} fallback months '
+                    f'(= {len(series)} holdout; earliest months use the fallback).')
+        else:
+            note = None
+
+        return {
+            'n_holdout': len(series),
+            'qr_points': qr_pts,
+            'fallback_points': fb_pts,
+            'mae_p50': round(mae_p50, 0),
+            'mape_p50': round(mape_p50, 4),
+            'coverage': round(coverage, 3),
+            'pinball': round(pinball, 1),
+            'mae_naive': round(mae_naive, 0),
+            'mae_seasonal': round(mae_seas, 0),
+            'skill_vs_naive': round(1 - mae_p50 / mae_naive, 3) if mae_naive > 0 else None,
+            'skill_vs_seasonal': round(1 - mae_p50 / mae_seas, 3) if mae_seas > 0 else None,
+            'series': series,
+            'note': note,
+        }
